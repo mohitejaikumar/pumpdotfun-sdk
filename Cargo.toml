@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+anchor-lang = {version = "0.31.1", features = ["init-if-needed"]}
+solana-client = "2.3.4"
+solana-sdk = "2.3.1"

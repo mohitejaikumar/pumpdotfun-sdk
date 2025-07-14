@@ -1,14 +1,27 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+use solana_client::rpc_client::RpcClient;
+use solana_sdk::{instruction::Instruction, pubkey::Pubkey};
+
+pub mod instructions;
+pub use instructions::*;
+pub mod constants;
+
+pub const PUMP_DOT_FUN_DEVENT_PROGRAM_ID: Pubkey =
+    Pubkey::from_str("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P").unwrap();
+
+pub struct PumpDotFunSdk {
+    pub rpc: Arc<RpcClient>,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+impl PumpDotFunSdk {
+    pub fn new(rpc: Arc<RpcClient>) -> Self {
+        Self { rpc }
+    }
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    pub fn create(
+        &self,
+        accounts: instructions::create::CreateAccounts,
+        args: instructions::create::CreateArgs,
+    ) -> Instruction {
+        instructions::create::create_ix(&PUMP_DOT_FUN_DEVENT_PROGRAM_ID, accounts, args)
     }
 }
