@@ -10,13 +10,14 @@ const GLOBAL_SEED: &[u8] = b"global";
 
 pub fn get_bonding_curve_pda(mint: &Pubkey) -> Pubkey {
     Pubkey::find_program_address(
-        &[BONDING_CURVE_SEED, mint.to_bytes()],
-        PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
-    )[0]
+        &[BONDING_CURVE_SEED, mint.to_bytes().as_slice()],
+        &PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
+    )
+    .0
 }
 
 pub fn get_associated_bonding_curve(mint: &Pubkey) -> Pubkey {
-    let bonding_curve = get_associated_bonding_curve(mint);
+    let bonding_curve = get_bonding_curve_pda(mint);
     get_associated_token_address(&bonding_curve, mint)
 }
 
@@ -24,13 +25,14 @@ pub fn get_metadata_pda(mint: &Pubkey) -> Pubkey {
     Pubkey::find_program_address(
         &[
             METADATA_SEED,
-            MPL_TOKEN_METADATA.to_bytes(),
-            mint.to_bytes(),
+            MPL_TOKEN_METADATA.to_bytes().as_slice(),
+            mint.to_bytes().as_slice(),
         ],
-        MPL_TOKEN_METADATA,
-    )[0]
+        &MPL_TOKEN_METADATA,
+    )
+    .0
 }
 
-pub fn get_global_pda(mint: &Pubkey) -> Pubkey {
-    Pubkey::find_program_address(&[GLOBAL_SEED], PUMP_DOT_FUN_DEVENT_PROGRAM_ID)[0]
+pub fn get_global_pda() -> Pubkey {
+    Pubkey::find_program_address(&[GLOBAL_SEED], &PUMP_DOT_FUN_DEVENT_PROGRAM_ID).0
 }
