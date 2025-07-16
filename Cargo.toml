@@ -3,9 +3,18 @@ name = "pumpdotfun-sdk"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "pump_fun_example"
+path = "examples/pump_fun_example.rs"
+
+[[bin]]
+name = "simple_example"
+path = "examples/simple_example.rs"
+
 [dependencies]
 anchor-lang = {version = "0.31.1", features = ["init-if-needed", "derive"]}
 solana-client = "2.3.4"
 solana-sdk = {version = "2.3.1"}
 spl-associated-token-account = "7.0.0"
 spl-token = "8.0.0"
+serde_json = "1.0"

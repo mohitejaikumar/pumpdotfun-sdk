@@ -35,10 +35,10 @@ pub fn create_ix(program_id: &Pubkey, accounts: CreateAccounts, args: CreateArgs
     let accounts = vec![
         AccountMeta::new(accounts.mint, true),
         AccountMeta::new(bonding_curve, false),
-        AccountMeta::new(associated_bonding_curve, true),
+        AccountMeta::new(associated_bonding_curve, false),
         AccountMeta::new(global_pda, false),
         AccountMeta::new_readonly(MPL_TOKEN_METADATA, false),
-        AccountMeta::new(metadata_pda, true),
+        AccountMeta::new(metadata_pda, false),
         AccountMeta::new(accounts.user, true),
         AccountMeta::new_readonly(SYSTEM_PROGRAM, false),
         AccountMeta::new_readonly(TOKEN_PROGRAM, false),

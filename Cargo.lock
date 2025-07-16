@@ -2559,6 +2559,7 @@ name = "pumpdotfun-sdk"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",
+ "serde_json",
  "solana-client",
  "solana-sdk",
  "spl-associated-token-account",
