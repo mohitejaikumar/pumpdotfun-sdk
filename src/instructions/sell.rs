@@ -15,7 +15,7 @@ use crate::{
         get_associated_bonding_curve, get_bonding_curve_pda, get_creator_vault_pda, get_global_pda,
     },
     states::{BondingCurve, Global},
-    PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
+    PUMP_DOT_FUN_PROGRAM_ID,
 };
 
 #[derive(AnchorSerialize, AnchorDeserialize)]
@@ -87,7 +87,7 @@ pub fn sell_ix(
         AccountMeta::new(creator_vault, false),
         AccountMeta::new_readonly(TOKEN_PROGRAM, false),
         AccountMeta::new_readonly(EVENT_AUTHORITY, false),
-        AccountMeta::new_readonly(PUMP_DOT_FUN_DEVENT_PROGRAM_ID, false),
+        AccountMeta::new_readonly(PUMP_DOT_FUN_PROGRAM_ID, false),
     ];
 
     let min_cost = args.min_sol_output as u128;

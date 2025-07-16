@@ -7,7 +7,7 @@ use crate::{
         get_associated_bonding_curve, get_bonding_curve_pda, get_global_pda, get_metadata_pda,
         get_mint_authority_pda,
     },
-    PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
+    PUMP_DOT_FUN_PROGRAM_ID,
 };
 use anchor_lang::prelude::*;
 use solana_sdk::instruction::{AccountMeta, Instruction};
@@ -50,7 +50,7 @@ pub fn create_ix(program_id: &Pubkey, accounts: CreateAccounts, args: CreateArgs
         AccountMeta::new_readonly(ASSOCIATED_TOKEN_PROGRAM, false),
         AccountMeta::new_readonly(RENT_SYSVAR, false),
         AccountMeta::new_readonly(EVENT_AUTHORITY, false),
-        AccountMeta::new_readonly(PUMP_DOT_FUN_DEVENT_PROGRAM_ID, false),
+        AccountMeta::new_readonly(PUMP_DOT_FUN_PROGRAM_ID, false),
     ];
 
     Instruction {

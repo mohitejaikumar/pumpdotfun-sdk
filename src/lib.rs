@@ -12,8 +12,7 @@ use crate::errors::ErrorCode;
 pub mod pda;
 pub mod states;
 
-pub const PUMP_DOT_FUN_DEVENT_PROGRAM_ID: Pubkey =
-    pubkey!("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P");
+pub const PUMP_DOT_FUN_PROGRAM_ID: Pubkey = pubkey!("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P");
 
 pub struct PumpDotFunSdk {
     pub rpc: Arc<RpcClient>,
@@ -29,7 +28,7 @@ impl PumpDotFunSdk {
         accounts: instructions::create::CreateAccounts,
         args: instructions::create::CreateArgs,
     ) -> Instruction {
-        instructions::create::create_ix(&PUMP_DOT_FUN_DEVENT_PROGRAM_ID, accounts, args)
+        instructions::create::create_ix(&PUMP_DOT_FUN_PROGRAM_ID, accounts, args)
     }
 
     pub fn buy(
@@ -37,7 +36,7 @@ impl PumpDotFunSdk {
         accounts: instructions::buy::BuyAccounts,
         args: instructions::buy::Buy,
     ) -> Result<Vec<Instruction>, ErrorCode> {
-        instructions::buy::buy_ix(&self.rpc, &PUMP_DOT_FUN_DEVENT_PROGRAM_ID, accounts, args)
+        instructions::buy::buy_ix(&self.rpc, &PUMP_DOT_FUN_PROGRAM_ID, accounts, args)
     }
 
     pub fn sell(
@@ -45,6 +44,6 @@ impl PumpDotFunSdk {
         accounts: instructions::sell::SellAccounts,
         args: instructions::sell::Sell,
     ) -> Result<Vec<Instruction>, ErrorCode> {
-        instructions::sell::sell_ix(&self.rpc, &PUMP_DOT_FUN_DEVENT_PROGRAM_ID, accounts, args)
+        instructions::sell::sell_ix(&self.rpc, &PUMP_DOT_FUN_PROGRAM_ID, accounts, args)
     }
 }

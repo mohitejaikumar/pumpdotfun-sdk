@@ -17,7 +17,7 @@ use crate::{
         get_associated_bonding_curve, get_bonding_curve_pda, get_creator_vault_pda, get_global_pda,
     },
     states::{BondingCurve, Global},
-    PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
+    PUMP_DOT_FUN_PROGRAM_ID,
 };
 
 pub struct Buy {
@@ -55,12 +55,6 @@ pub fn buy_ix(
     let global_pda = get_global_pda();
     let associated_user_token_account =
         get_associated_token_address(&accounts.user, &accounts.mint);
-
-    // Do rpc call and getaccount info
-
-    // fetch the globalpda data
-
-    // deserialize and get the fee_recepient address
 
     let global_account_data = rpc_client
         .get_account_data(&global_pda)
@@ -109,7 +103,7 @@ pub fn buy_ix(
         AccountMeta::new_readonly(TOKEN_PROGRAM, false),
         AccountMeta::new(creator_vault, false),
         AccountMeta::new_readonly(EVENT_AUTHORITY, false),
-        AccountMeta::new_readonly(PUMP_DOT_FUN_DEVENT_PROGRAM_ID, false),
+        AccountMeta::new_readonly(PUMP_DOT_FUN_PROGRAM_ID, false),
     ];
 
     // Calculate the sol_amount_to_pay based on slippage
