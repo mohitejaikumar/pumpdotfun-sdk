@@ -1,10 +1,13 @@
-use anchor_lang::pubkey;
+use borsh::{BorshDeserialize, BorshSerialize};
 use pumpdotfun_sdk::{
+    errors::ErrorCode,
     instructions::{
         buy::{Buy, BuyAccounts},
         create::{CreateAccounts, CreateArgs},
     },
-    PumpDotFunSdk,
+    pda::get_global_pda,
+    states::Global,
+    PumpDotFunSdk, Sell, SellAccounts,
 };
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::{
@@ -71,6 +74,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     buy_simple_tokens(&sdk, &user_keypair, &mint_pubkey)?;
 
     println!("\n🎉 Simple example completed! Check the transactions on Solana Explorer (devnet)");
+
+    println!("\n💰 Selling tokens...");
+    sell_simple_tokens(&sdk, &user_keypair, &mint_pubkey)?;
+
     Ok(())
 }
 
@@ -86,12 +93,6 @@ fn create_simple_token(
         user: user_keypair.pubkey(),
     };
 
-    let pump_key = pubkey!("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P");
-
-    let global_pda = Pubkey::find_program_address(&[b"global"], &pump_key).0;
-
-    println!("Global PDA: {}", global_pda);
-
     let args = CreateArgs {
         name: "Test Pump Token".to_string(),
         symbol: "TEST".to_string(),
@@ -101,8 +102,6 @@ fn create_simple_token(
 
     let instruction = sdk.create(accounts, args);
     let recent_blockhash = sdk.rpc.get_latest_blockhash()?;
-    println!("Instruction: {:?}", instruction);
-
 
     let mut transaction = Transaction::new_with_payer(&[instruction], Some(&user_keypair.pubkey()));
     transaction.sign(&[user_keypair, &mint_keypair], recent_blockhash);
@@ -129,7 +128,7 @@ fn buy_simple_tokens(
     let args = Buy {
         amount: 100_000_000,                   // 0.1 tokens (assuming 9 decimals)
         max_sol_cost: LAMPORTS_PER_SOL / 1000, // Max 0.001 SOL
-        slippage: 1000,                        // 10% slippage
+        slippage: 10,                          // 10% slippage
     };
 
     let instructions = sdk
@@ -142,6 +141,36 @@ fn buy_simple_tokens(
 
     let signature = sdk.rpc.send_and_confirm_transaction(&transaction)?;
     println!("✅ Tokens purchased! TX: {}", signature);
+
+    Ok(())
+}
+
+fn sell_simple_tokens(
+    sdk: &PumpDotFunSdk,
+    user_keypair: &Keypair,
+    mint: &Pubkey,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let accounts = SellAccounts {
+        mint: *mint,
+        user: user_keypair.pubkey(),
+    };
+
+    let args = Sell {
+        amount: 50_000_000,                         // 0.05 tokens (assuming 9 decimals)
+        min_sol_output: LAMPORTS_PER_SOL / 1000000, // Min 0.001 SOL
+        slippage: 10,                               // 10% slippage
+    };
+
+    let instructions = sdk
+        .sell(accounts, args)
+        .map_err(|e| format!("Sell error: {:?}", e))?;
+    let recent_blockhash = sdk.rpc.get_latest_blockhash()?;
+
+    let mut transaction = Transaction::new_with_payer(&instructions, Some(&user_keypair.pubkey()));
+    transaction.sign(&[user_keypair], recent_blockhash);
+
+    let signature = sdk.rpc.send_and_confirm_transaction(&transaction)?;
+    println!("✅ Tokens sold! TX: {}", signature);
 
     Ok(())
 }

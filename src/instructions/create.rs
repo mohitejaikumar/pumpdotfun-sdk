@@ -3,7 +3,10 @@ use crate::{
         ASSOCIATED_TOKEN_PROGRAM, EVENT_AUTHORITY, MPL_TOKEN_METADATA, RENT_SYSVAR, SYSTEM_PROGRAM,
         TOKEN_PROGRAM,
     },
-    pda::{get_associated_bonding_curve, get_bonding_curve_pda, get_global_pda, get_metadata_pda},
+    pda::{
+        get_associated_bonding_curve, get_bonding_curve_pda, get_global_pda, get_metadata_pda,
+        get_mint_authority_pda,
+    },
     PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
 };
 use anchor_lang::prelude::*;
@@ -31,9 +34,11 @@ pub fn create_ix(program_id: &Pubkey, accounts: CreateAccounts, args: CreateArgs
     let associated_bonding_curve = get_associated_bonding_curve(&accounts.mint);
     let metadata_pda = get_metadata_pda(&accounts.mint);
     let global_pda = get_global_pda();
+    let mint_authority_pda = get_mint_authority_pda();
 
     let accounts = vec![
         AccountMeta::new(accounts.mint, true),
+        AccountMeta::new(mint_authority_pda, false),
         AccountMeta::new(bonding_curve, false),
         AccountMeta::new(associated_bonding_curve, false),
         AccountMeta::new(global_pda, false),

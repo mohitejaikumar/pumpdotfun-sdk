@@ -1,3 +1,4 @@
+use ::borsh::BorshDeserialize;
 use anchor_lang::prelude::*;
 use core::result::Result;
 use solana_client::rpc_client::RpcClient;
@@ -10,12 +11,12 @@ use spl_associated_token_account::{
 };
 
 use crate::{
-    constants::{
-        ASSOCIATED_TOKEN_PROGRAM, EVENT_AUTHORITY, RENT_SYSVAR, SYSTEM_PROGRAM, TOKEN_PROGRAM,
-    },
+    constants::{EVENT_AUTHORITY, SYSTEM_PROGRAM, TOKEN_PROGRAM},
     errors::ErrorCode,
-    pda::{get_associated_bonding_curve, get_bonding_curve_pda, get_global_pda},
-    states::Global,
+    pda::{
+        get_associated_bonding_curve, get_bonding_curve_pda, get_creator_vault_pda, get_global_pda,
+    },
+    states::{BondingCurve, Global},
     PUMP_DOT_FUN_DEVENT_PROGRAM_ID,
 };
 
@@ -65,10 +66,20 @@ pub fn buy_ix(
         .get_account_data(&global_pda)
         .map_err(|_| ErrorCode::GlobalNotFound)?;
 
-    let global: Global = Global::try_from_slice(&global_account_data)
+    let global: Global = Global::deserialize(&mut &global_account_data[8..])
         .map_err(|_| ErrorCode::DeserializationError)?;
 
     let fee_recipient = global.fee_recipient;
+
+    let bonding_curve_data = rpc_client
+        .get_account_data(&bonding_curve)
+        .map_err(|_| ErrorCode::BondingCurveNotFound)?;
+
+    let bonding_curve_account_data: BondingCurve =
+        BondingCurve::deserialize(&mut &bonding_curve_data[8..])
+            .map_err(|_| ErrorCode::DeserializationError)?;
+
+    let creator_vault = get_creator_vault_pda(&bonding_curve_account_data.creator);
 
     // CHECK IF ATA exists
 
@@ -81,22 +92,22 @@ pub fn buy_ix(
             &accounts.user,
             &accounts.user,
             &accounts.mint,
-            &ASSOCIATED_TOKEN_PROGRAM,
+            &TOKEN_PROGRAM,
         );
         instructions.push(create_ata_ix);
     }
 
     let accounts_metas = vec![
         AccountMeta::new_readonly(global_pda, false),
-        AccountMeta::new(fee_recipient, true),
+        AccountMeta::new(fee_recipient, false),
         AccountMeta::new_readonly(accounts.mint, false),
-        AccountMeta::new(bonding_curve, true),
-        AccountMeta::new(associated_bonding_curve, true),
-        AccountMeta::new(associated_user_token_account, true),
+        AccountMeta::new(bonding_curve, false),
+        AccountMeta::new(associated_bonding_curve, false),
+        AccountMeta::new(associated_user_token_account, false),
         AccountMeta::new(accounts.user, true),
         AccountMeta::new_readonly(SYSTEM_PROGRAM, false),
         AccountMeta::new_readonly(TOKEN_PROGRAM, false),
-        AccountMeta::new_readonly(RENT_SYSVAR, false),
+        AccountMeta::new(creator_vault, false),
         AccountMeta::new_readonly(EVENT_AUTHORITY, false),
         AccountMeta::new_readonly(PUMP_DOT_FUN_DEVENT_PROGRAM_ID, false),
     ];
