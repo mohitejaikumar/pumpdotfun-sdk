@@ -1,6 +1,6 @@
 [package]
 name = "pumpdotfun-sdk"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Jaikumar Mohite <mohitejaikumar@gmail.com>"]
 description = "Rust SDK for interacting with the pump.fun contract"
