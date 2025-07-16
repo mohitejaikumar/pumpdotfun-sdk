@@ -16,17 +16,6 @@ A Rust SDK for interacting with pump.fun on Solana. This SDK provides easy-to-us
 - **Network**: Solana Mainnet
 - **Framework**: Anchor
 
-## Installation
-
-Add this SDK to your `Cargo.toml`:
-
-```toml
-[dependencies]
-pumpdotfun-sdk = { path = "." }
-solana-client = "2.3.4"
-solana-sdk = "2.3.1"
-```
-
 ## Quick Start
 
 ### 1. Initialize the SDK
