@@ -1,6 +1,6 @@
 # Pump.fun SDK for Rust
 
-A Rust SDK for interacting with pump.fun on Solana devnet. This SDK provides easy-to-use functions for creating tokens, buying from bonding curves, and selling to bonding curves.
+A Rust SDK for interacting with pump.fun on Solana. This SDK provides easy-to-use functions for creating tokens, buying from bonding curves, and selling to bonding curves.
 
 ## Features
 
@@ -12,8 +12,8 @@ A Rust SDK for interacting with pump.fun on Solana devnet. This SDK provides eas
 
 ## Program Information
 
-- **Devnet Program ID**: `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P`
-- **Network**: Solana Devnet
+- **Program ID**: `6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P`
+- **Network**: Solana Mainnet
 - **Framework**: Anchor
 
 ## Installation
@@ -76,9 +76,9 @@ let buy_accounts = BuyAccounts {
 };
 
 let buy_args = Buy {
-    amount: 1_000_000_000, // Amount of tokens to buy
-    max_sol_cost: LAMPORTS_PER_SOL / 100, // Maximum 0.01 SOL
-    slippage: 500, // 5% slippage tolerance (basis points)
+    amount: 100_000_000, // Amount of tokens to buy
+    max_sol_cost: LAMPORTS_PER_SOL / 1000, // Maximum 0.001 SOL
+    slippage: 10, // 10% slippage tolerance 
 };
 
 let instructions = sdk.buy(buy_accounts, buy_args)?;
@@ -95,9 +95,9 @@ let sell_accounts = SellAccounts {
 };
 
 let sell_args = Sell {
-    amount: 500_000_000, // Amount of tokens to sell
-    min_sol_output: LAMPORTS_PER_SOL / 1000, // Minimum 0.001 SOL expected
-    slippage: 500, // 5% slippage tolerance (basis points)
+    amount: 50_000_000,                         // 0.05 tokens (assuming 9 decimals)
+    min_sol_output: LAMPORTS_PER_SOL / 1000000, 
+    slippage: 10,  // 10% slippage
 };
 
 let instructions = sdk.sell(sell_accounts, sell_args)?;
@@ -167,10 +167,6 @@ If you prefer manual setup:
    cargo run --bin simple_example
    ```
    
-   **Full Example** (comprehensive demonstration):
-   ```bash
-   cargo run --bin pump_fun_example
-   ```
 
 The examples will:
 1. Connect to Solana devnet
@@ -197,6 +193,7 @@ src/
     └── global.rs      # Global state structure
 ```
 
+
 ## Key Concepts
 
 ### Bonding Curves
@@ -206,7 +203,7 @@ pump.fun uses bonding curves to automatically provide liquidity for newly create
 Both buy and sell operations include slippage protection:
 - **Buy**: Specify maximum SOL you're willing to spend
 - **Sell**: Specify minimum SOL you're willing to receive
-- **Slippage**: Tolerance in basis points (500 = 5%)
+- **Slippage**: Tolerance (5 = 5%)
 
 ### Associated Token Accounts
 The SDK automatically handles Associated Token Account (ATA) creation when needed for buy operations.
@@ -242,13 +239,6 @@ match sdk.buy(accounts, args) {
 4. Add tests
 5. Submit a pull request
 
-## Testing
-
-Run the test suite:
-
-```bash
-cargo test
-```
 
 ## License
 
@@ -257,19 +247,3 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Disclaimer
 
 This SDK is for educational and development purposes. Always test thoroughly on devnet before using on mainnet. The authors are not responsible for any financial losses.
-
-## Support
-
-For questions and support:
-- Create an issue in this repository
-- Check the [Solana documentation](https://docs.solana.com/)
-- Visit the [Anchor documentation](https://book.anchor-lang.com/)
-
-## Roadmap
-
-- [ ] Mainnet support
-- [ ] Additional slippage calculation methods
-- [ ] Bulk operations support
-- [ ] Event listening utilities
-- [ ] Price calculation helpers
-- [ ] Integration with popular Solana wallets 

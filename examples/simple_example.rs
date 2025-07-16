@@ -153,7 +153,7 @@ fn sell_simple_tokens(
 
     let args = Sell {
         amount: 50_000_000,                         // 0.05 tokens (assuming 9 decimals)
-        min_sol_output: LAMPORTS_PER_SOL / 1000000, // Min 0.001 SOL
+        min_sol_output: LAMPORTS_PER_SOL / 1000000, 
         slippage: 10,                               // 10% slippage
     };
 
