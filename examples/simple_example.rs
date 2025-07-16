@@ -1,12 +1,8 @@
-use borsh::{BorshDeserialize, BorshSerialize};
 use pumpdotfun_sdk::{
-    errors::ErrorCode,
     instructions::{
         buy::{Buy, BuyAccounts},
         create::{CreateAccounts, CreateArgs},
     },
-    pda::get_global_pda,
-    states::Global,
     PumpDotFunSdk, Sell, SellAccounts,
 };
 use solana_client::rpc_client::RpcClient;
